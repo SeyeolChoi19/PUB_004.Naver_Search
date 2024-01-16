@@ -1,18 +1,18 @@
 {
     "UploadToGoogleWithNotifications" : {
         "upload_to_google_settings" : {
-            "target_dataset"       : "billingData",
-            "project_id_string"    : "sincere-night-367502",
-            "gcp_json_file"        : "C:/Users/USER/Performance Marketing/config/sincere-night-367502-e21794d25249.json",
+            "target_dataset"       : "TestData",
+            "project_id_string"    : "miscprojects-370414",
+            "gcp_json_file"        : "C:/Users/USER/Downloads/miscprojects-370414-af5f78e7c74a.json",
             "gcp_table_names_list" : ["chscrape_status", "chscrape_001", "chscrape_002", "chscrape_003"],
             "form_outputs_config_dict" : {
                 "FormOutputData" : {
                     "constructor" : {
-                        "driver_path"   : "C:/Users/User/SamsungCollector/config/chromedriver.exe",
+                        "driver_path"   : "C:/Users/USER/Desktop/Python_Projects/NaverScraperApp/config/chromedriver.exe",
                         "max_wait_time" : 30
                     },
                     "form_output_settings_method" : {
-                        "status_merge_col"               : "검색어",
+                        "status_merge_col"               : "search_keyword",
                         "output_file_name"               : "./data/{} 네이버 검색어 키워드 데이터.xlsx",
                         "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어"],
                         "naver_keywords_settings_dict" : {

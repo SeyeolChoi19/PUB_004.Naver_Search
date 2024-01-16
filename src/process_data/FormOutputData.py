@@ -35,8 +35,8 @@ class FormOutputData:
         naver_keyword_status_data = pd.DataFrame(self.naver_keywords_object.naver_data_status_check)
         naver_keyword_status_data["search_keyword"] = naver_keyword_status_data["search_keyword"].replace("티파니", "티파니앤코")
 
-        naver_keyword_status_data = naver_keyword_status_data.rename(columns = self.keywords_status_rename_dict)
-        naver_data_dataframe      = pd.DataFrame(self.naver_keywords_object.naver_data_dictionary).rename(columns = self.keywords_rename_dict)
+        # naver_keyword_status_data = naver_keyword_status_data.rename(columns = self.keywords_status_rename_dict)
+        naver_data_dataframe      = pd.DataFrame(self.naver_keywords_object.naver_data_dictionary)
         
         return naver_keyword_status_data, naver_data_dataframe 
     
@@ -45,9 +45,8 @@ class FormOutputData:
         self.naver_top_keywords_object.naver_top_keyword_settings_method(**self.naver_top_keywords_settings_dict)
         self.naver_top_keywords_object.get_keyword_data()
 
-        naver_top_keywords_status_data = pd.DataFrame(self.naver_top_keywords_object.naver_top_data_status_check).drop(columns = ["date"]).rename(columns = self.top_keywords_status_rename_dict)
-        naver_top_keywords_dataframe   = pd.DataFrame(self.naver_top_keywords_object.naver_top_keywords_dictionary).rename(columns = self.top_keywords_rename_dict)
-
+        naver_top_keywords_status_data = pd.DataFrame(self.naver_top_keywords_object.naver_top_data_status_check).drop(columns = ["date"])
+        naver_top_keywords_dataframe   = pd.DataFrame(self.naver_top_keywords_object.naver_top_keywords_dictionary)
         return naver_top_keywords_status_data, naver_top_keywords_dataframe
     
     def naver_views_method(self) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -55,8 +54,8 @@ class FormOutputData:
         self.naver_views_object.naver_views_settings_method(**self.naver_views_settings_dict)
         self.naver_views_object.get_keyword_data()
 
-        naver_views_status_data = pd.DataFrame(self.naver_views_object.naver_views_status_check).drop(columns = ["date"]).rename(columns = self.views_status_rename_dict)
-        naver_views_dataframe   = pd.DataFrame(self.naver_views_object.naver_views_dictionary).rename(columns = self.views_rename_dict)
+        naver_views_status_data = pd.DataFrame(self.naver_views_object.naver_views_status_check).drop(columns = ["date"])
+        naver_views_dataframe   = pd.DataFrame(self.naver_views_object.naver_views_dictionary)
 
         return naver_views_status_data, naver_views_dataframe 
     
@@ -65,7 +64,7 @@ class FormOutputData:
         naver_top_keywords_status_data, naver_top_keywords_data = self.naver_top_keywords_method()
         naver_views_status_dataframe, naver_views_dataframe     = self.naver_views_method()
 
-        output_status_data  = pd.merge(naver_keyword_status_dataframe, pd.merge(naver_top_keywords_status_data, naver_views_status_dataframe, how = "left", on = self.status_merge_col), how = "left", on = self.status_merge_col).rename(columns = self.status_rename_dict)
+        output_status_data  = pd.merge(naver_keyword_status_dataframe, pd.merge(naver_top_keywords_status_data, naver_views_status_dataframe, how = "left", on = self.status_merge_col), how = "left", on = self.status_merge_col)
         excel_writer_object = pd.ExcelWriter(self.output_file_name.format(str(dt.datetime.now())[0:10]), engine = "openpyxl")
         results_data_list   = [output_status_data, naver_data_dataframe, naver_top_keywords_data, naver_views_dataframe]
 
