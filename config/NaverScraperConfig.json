@@ -1,18 +1,148 @@
 {
     "UploadToGoogleWithNotifications" : {
-        "upload_to_google_settings" : {
-            "target_dataset"       : "TestData",
-            "project_id_string"    : "miscprojects-370414",
-            "gcp_json_file"        : "C:/Users/USER/Downloads/miscprojects-370414-af5f78e7c74a.json",
-            "gcp_table_names_list" : ["chscrape_status", "chscrape_001", "chscrape_002", "chscrape_003"],
+        "upload_to_postgres_settings" : {
+            "db_interface_config" : {
+                "DBInterface" : {
+                    "connection_settings" : {
+                        "sql_type"    : "postgresql",
+                        "username"    : "postgres",
+                        "password"    : "Pani0505!",
+                        "hostname"    : "localhost",
+                        "server_name" : "NaverKeywords"
+                    }
+                }
+            },
+            "table_names_list" : ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003"],
             "form_outputs_config_dict" : {
-                "FormOutputData" : {
+                "FormOutputsData" : {
                     "constructor" : {
-                        "driver_path"   : "C:/Users/USER/Desktop/Python_Projects/NaverScraperApp/config/chromedriver.exe",
+                        "driver_path"   : "C:/Users/User/SamsungCollector/config/chromedriver.exe",
                         "max_wait_time" : 30
                     },
                     "form_output_settings_method" : {
-                        "status_merge_col"               : "search_keyword",
+                        "status_merge_col"               : "검색어",
+                        "output_file_name"               : "./data/{} 네이버 검색어 키워드 데이터.xlsx",
+                        "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어"],
+                        "naver_keywords_settings_dict" : {
+                            "naver_search_url" : "https://www.naver.com/",
+                            "keywords_list"    : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
+                        },
+                        "naver_top_keywords_settings_dict" : {
+                            "naver_search_url"    : "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query={}",
+                            "keywords_list"       : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니앤코", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"],
+                            "keyword_filter_list" : ["인기글", "인기 카페글"]
+                        },
+                        "naver_views_settings_dict" : {
+                            "naver_views_url" : "https://search.naver.com/search.naver?where=view&sm=tab_jum&query={}",
+                            "keywords_list"   : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니앤코", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
+                        },
+                        "status_rename_dict" : {
+                            "date" : "일자"
+                        },
+                        "keywords_rename_dict" : {
+                            "date"              : "일자",
+                            "search_keyword"    : "검색어",
+                            "autocomplete_term" : "자동완성_키워드",
+                            "term_ranking"      : "검색어_순위"
+                        },
+                        "keywords_status_rename_dict" : {
+                            "search_keyword"    : "검색어",
+                            "completion_status" : "자동완성_키워드_yn"
+                        },
+                        "top_keywords_rename_dict" : {
+                            "date"              : "일자",
+                            "search_keyword"    : "검색어",
+                            "trending_keywords" : "인기주제_키워드",
+                            "term_ranking"      : "검색어_순위"
+                        },
+                        "top_keywords_status_rename_dict" : {
+                            "search_keyword"    : "검색어",
+                            "completion_status" : "인기주제_키워드_yn"
+                        },
+                        "views_rename_dict" : {
+                            "date"             : "일자",
+                            "search_keyword"   : "검색어",
+                            "related_keywords" : "연관검색어_키워드",
+                            "term_ranking"     : "검색어_순위",
+                            "load_more_yn"     : "더보기_yn"
+                        },
+                        "views_status_rename_dict" : {
+                            "search_keyword"    : "검색어",
+                            "completion_status" : "연관검색어_키워드_yn"
+                        }
+                    }   
+                }
+            },
+            "rename_dict" : {
+                "CHSCRAPE_STATUS" : {
+                    "일자"                : "STAT_DATE",
+                    "검색어"              : "STAT_TERM",
+                    "자동완성_키워드_yn"   : "STAT_AUTO_YN",
+                    "인기주제_키워드_yn"   : "STAT_POPU_YN",
+                    "연관검색어_키워드_yn" : "STAT_RELA_YN"
+                },
+                "CHSCRAPE_001" : {
+                    "일자"           : "AUTO_DATE",
+                    "검색어"         : "AUTO_TERM",
+                    "자동완성_키워드" : "AUTO_SRCK",
+                    "검색어_순위"    : "AUTO_RANK"
+                },
+                "CHSCRAPE_002" : {
+                    "일자"           : "POPU_DATE",
+                    "검색어"         : "POPU_TERM",
+                    "인기주제_키워드" : "POPU_SRCK",
+                    "검색어_순위"     : "POPU_RANK"
+                },
+                "CHSCRAPE_003" : {
+                    "일자"             : "RELA_DATE",
+                    "검색어"           : "RELA_TERM",
+                    "연관검색어_키워드" : "RELA_SRCK",
+                    "검색어_순위"       : "RELA_RANK",
+                    "더보기_yn"        : "RELA_MORE_YN"
+                }
+            }
+        },
+        "upload_to_google_settings" : {
+            "target_dataset"       : "test",
+            "project_id_string"    : "sincere-night-367502",
+            "gcp_json_file"        : "C:/Users/User/Downloads/sincere-night-367502-d1ed9f50d1d7.json",
+            "gcp_table_names_list" : ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003"],
+            "rename_dict" : {
+                "CHSCRAPE_STATUS" : {
+                    "일자"                : "STAT_DATE",
+                    "검색어"              : "STAT_TERM",
+                    "자동완성_키워드_yn"   : "STAT_AUTO_YN",
+                    "인기주제_키워드_yn"   : "STAT_POPU_YN",
+                    "연관검색어_키워드_yn" : "STAT_RELA_YN"
+                },
+                "CHSCRAPE_001" : {
+                    "일자"           : "AUTO_DATE",
+                    "검색어"         : "AUTO_TERM",
+                    "자동완성_키워드" : "AUTO_SRCK",
+                    "검색어_순위"    : "AUTO_RANK"
+                },
+                "CHSCRAPE_002" : {
+                    "일자"           : "POPU_DATE",
+                    "검색어"         : "POPU_TERM",
+                    "인기주제_키워드" : "POPU_SRCK",
+                    "검색어_순위"     : "POPU_RANK"
+                },
+                "CHSCRAPE_003" : {
+                    "일자"             : "RELA_DATE",
+                    "검색어"           : "RELA_TERM",
+                    "연관검색어_키워드" : "RELA_SRCK",
+                    "검색어_순위"       : "RELA_RANK",
+                    "더보기_yn"        : "RELA_MORE_YN"
+                }
+            },
+            "form_outputs_config_dict" : {
+                "FormOutputData" : {
+                    "constructor" : {
+                        "driver_path"   : "C:/Users/User/SamsungCollector/config/chromedriver.exe",
+                        "max_wait_time" : 30
+                    },
+                    "form_output_settings_method" : {
+                        "status_merge_col"               : "검색어",
                         "output_file_name"               : "./data/{} 네이버 검색어 키워드 데이터.xlsx",
                         "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어"],
                         "naver_keywords_settings_dict" : {
