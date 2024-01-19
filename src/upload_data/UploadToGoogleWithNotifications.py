@@ -5,11 +5,12 @@ from config.BigQueryInterface        import BigQueryInterface
 from src.process_data.FormOutputData import FormOutputData
 
 class UploadToGoogleWithNotifications:
-    def upload_to_google_settings(self, target_dataset: str, project_id_string: str, gcp_json_file: str, gcp_table_names_list: list[str], form_outputs_config_dict: dict) -> None:
+    def upload_to_google_settings(self, target_dataset: str, project_id_string: str, gcp_json_file: str, gcp_table_names_list: list[str], rename_dict: dict, form_outputs_config_dict: dict) -> None:
         self.target_dataset           = target_dataset
         self.project_id_string        = project_id_string
         self.gcp_json_file            = gcp_json_file
         self.gcp_table_names_list     = gcp_table_names_list
+        self.rename_dict              = rename_dict
         self.form_outputs_config_dict = form_outputs_config_dict
         self.gcp_interface_object     = BigQueryInterface()
         self.gcp_interface_object.gcp_settings_method(self.project_id_string, self.gcp_json_file)
@@ -25,4 +26,5 @@ class UploadToGoogleWithNotifications:
         results_data_list = self.form_outputs_data()
 
         for (table_id, dataframe) in zip(self.gcp_table_names_list, results_data_list):
+            dataframe = dataframe.rename(columns = self.rename_dict[table_id])
             self.gcp_interface_object.upload_data(dataframe, self.project_id_string, f"{self.target_dataset}.{table_id}")
