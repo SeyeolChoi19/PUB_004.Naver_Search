@@ -36,6 +36,13 @@ class SeleniumSettings:
             case "id"    : self.__wait.until(ec.presence_of_all_elements_located((By.ID, element_str)))
             case "class" : self.__wait.until(ec.presence_of_all_elements_located((By.CLASS_NAME, element_str)))
             case _       : raise RuntimeError("Unsupported element type")
+        
+    def wait_for_element_to_be_visible(self, element_str: str, element_type: str = "xpath"):
+        match element_type.lower():
+            case "xpath" : self.__wait.until(ec.visibility_of_all_elements_located((By.XPATH, element_str)))
+            case "id"    : self.__wait.until(ec.visibility_of_all_elements_located((By.ID, element_str)))
+            case "class" : self.__wait.until(ec.visibility_of_all_elements_located((By.CLASS_NAME, element_str)))
+            case _       : raise RuntimeError("Unsupported element type")
 
     def check_for_element(self, element_str: str, element_type: str = "xpath"):
         return_value = False
