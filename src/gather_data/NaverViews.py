@@ -28,7 +28,7 @@ class NaverViews:
         }
 
     def get_keyword_data(self) -> None: 
-        def press_button_yn(extraction_status: int, keyword_list: list[str]) -> list[str]: 
+        def press_button_yn(keyword_list: list[str]) -> list[str]: 
             output_list = keyword_list
             number_list = (lambda x: len(x) if (x[-1] != "더보기") else len(x) - 1)(output_list) * [0]
 
@@ -44,7 +44,7 @@ class NaverViews:
             zip_object = zip(rank_list, keywords_and_numbers[0], keywords_and_numbers[1])
 
             for (rank_num, sub_keyword, more_yn) in zip_object: 
-                self.naver_views_dictionary["date"].append(str(dt.datetime.now())[0:19])
+                self.naver_views_dictionary["date"].append(str(dt.datetime.now())[0:10])
                 self.naver_views_dictionary["search_keyword"].append(keyword)
                 self.naver_views_dictionary["related_keywords"].append(sub_keyword)
                 self.naver_views_dictionary["term_ranking"].append(str(rank_num + 1).zfill(2))
@@ -59,7 +59,7 @@ class NaverViews:
             return extraction_status
 
         def status_check(keyword: str, extraction_status: int):
-            self.naver_views_status_check["date"].append(str(dt.datetime.now())[0:19])
+            self.naver_views_status_check["date"].append(str(dt.datetime.now())[0:10])
             self.naver_views_status_check["search_keyword"].append(keyword)
             self.naver_views_status_check["completion_status"].append(extraction_status)
         
@@ -68,6 +68,6 @@ class NaverViews:
             time.sleep(5)
             extraction_status    = check_exists_yn()
             keywords_list        = self.selenium_object.search_for_element("related_srch", "class").text.split("\n") if (extraction_status == 1) else ["extraction_failed"]
-            keywords_and_numbers = press_button_yn(extraction_status, keywords_list)
+            keywords_and_numbers = press_button_yn(keywords_list)
             status_check(keyword, extraction_status)
             save_data(keyword, keywords_and_numbers)
