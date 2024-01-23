@@ -16,10 +16,15 @@ class DBInterface:
         self.engine      = create_engine(f"{sql_type}://{username}:{password}@{hostname}/{server_name}", echo = False)
     
     def upload_to_database(self, table_name: str, df: pd.core.frame.DataFrame, exist_option: str = "append"):
-        df.to_sql(table_name, con = self.engine, if_exists = exist_option)
+        df.to_sql(table_name, con = self.engine, if_exists = exist_option, index = False)
         
-    def get_from_database(self, query_str: str):
-        self.df = pd.DataFrame(self.engine.connect().execute(text(query_str)).fetchall())    
+    def get_from_database(self, table_id: str, columns_list: list[str], filter_condition: str = None):
+        query_str = (lambda x: x if (filter_condition == None) else f"{x} WHERE {filter_condition}")(f"SELECT {','.join(columns_list)} FROM {table_id}")
+        self.df   = pd.DataFrame(self.engine.connect().execute(text(query_str)).fetchall())    
+
+        return self.df
         
     def db_interaction(self, query_str: str):
-        self.engine.execute(query_str)
+        return_object = self.engine.connect().execute(text(query_str))
+
+        return return_object
