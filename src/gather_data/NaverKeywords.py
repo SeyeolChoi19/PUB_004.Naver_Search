@@ -30,7 +30,7 @@ class NaverKeywords:
         def save_status_data(keyword: str, extracted_keywords: list[str]) -> int:
             extraction_status = 1 if ((len(extracted_keywords) >= 1) and (extracted_keywords[0] != "extraction_failed")) else 0
 
-            self.naver_data_status_check["date"].append(str(dt.datetime.now())[0:19])
+            self.naver_data_status_check["date"].append(str(dt.datetime.now())[0:10])
             self.naver_data_status_check["search_keyword"].append(keyword)
             self.naver_data_status_check["completion_status"].append(extraction_status)
 
@@ -38,7 +38,7 @@ class NaverKeywords:
 
         def save_crawled_data(keyword: str, extracted_keywords: str) -> None:
             for (rank_num, word) in enumerate(extracted_keywords):
-                self.naver_data_dictionary["date"].append(str(dt.datetime.now())[0:19])
+                self.naver_data_dictionary["date"].append(str(dt.datetime.now())[0:10])
                 self.naver_data_dictionary["search_keyword"].append(keyword)
                 self.naver_data_dictionary["autocomplete_term"].append(word)
                 self.naver_data_dictionary["term_ranking"].append(str(rank_num + 1).zfill(2))
