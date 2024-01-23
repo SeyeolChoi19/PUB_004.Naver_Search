@@ -38,7 +38,7 @@ class NaverTopKeywords:
             keywords_list = [i for i in keywords_list if (i not in self.keyword_filter_list)]
 
             for (rank_num, sub_keyword) in enumerate(keywords_list):
-                self.naver_top_keywords_dictionary["date"].append(str(dt.datetime.now())[0:19])
+                self.naver_top_keywords_dictionary["date"].append(str(dt.datetime.now())[0:10])
                 self.naver_top_keywords_dictionary["search_keyword"].append(keyword)
                 self.naver_top_keywords_dictionary["trending_keywords"].append(sub_keyword)
                 self.naver_top_keywords_dictionary["term_ranking"].append(str(rank_num + 1).zfill(2))
@@ -46,7 +46,7 @@ class NaverTopKeywords:
         def status_check(keyword: str, keywords_list: list[str]) -> int:
             extraction_status = 1 if (len(keywords_list) > 1) else 0
             
-            self.naver_top_data_status_check["date"].append(str(dt.datetime.now())[0:19])
+            self.naver_top_data_status_check["date"].append(str(dt.datetime.now())[0:10])
             self.naver_top_data_status_check["search_keyword"].append(keyword)
             self.naver_top_data_status_check["completion_status"].append(extraction_status)
 
