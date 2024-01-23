@@ -12,7 +12,7 @@
                     }
                 }
             },
-            "table_names_list" : ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003"],
+            "table_names_list" : ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003", "CHSCRAPE_004"],
             "form_outputs_config_dict" : {
                 "FormOutputsData" : {
                     "constructor" : {
@@ -22,7 +22,7 @@
                     "form_output_settings_method" : {
                         "status_merge_col"               : "검색어",
                         "output_file_name"               : "./data/{} 네이버 검색어 키워드 데이터.xlsx",
-                        "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어"],
+                        "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어", "카페 블로그 게시물 개수"],
                         "naver_keywords_settings_dict" : {
                             "naver_search_url" : "https://www.naver.com/",
                             "keywords_list"    : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
@@ -36,8 +36,16 @@
                             "naver_views_url" : "https://search.naver.com/search.naver?where=view&sm=tab_jum&query={}",
                             "keywords_list"   : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니앤코", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
                         },
+                        "naver_articles_settings_dict" : {                            
+                            "naver_cafe_urls" : [
+                                "https://section.cafe.naver.com/ca-fe/home/search/articles?q={}",
+                                "https://section.cafe.naver.com/ca-fe/home/search/articles?q={}&em=1"
+                            ],
+                            "naver_blog_url" : "https://section.blog.naver.com/Search/Post.naver?pageNo=1&rangeType=ALL&orderBy=sim&keyword={}",
+                            "keywords_list"  : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니앤코", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
+                        },
                         "status_rename_dict" : {
-                            "date" : "일자"
+                            "date" : "일자"             
                         },
                         "keywords_rename_dict" : {
                             "date"              : "일자",
@@ -69,6 +77,19 @@
                         "views_status_rename_dict" : {
                             "search_keyword"    : "검색어",
                             "completion_status" : "연관검색어_키워드_yn"
+                        },
+                        "articles_rename_dict" : {
+                            "date"                         : "일자",
+                            "search_keyword"               : "검색어",
+                            "cafe_article_count"           : "카페글_개수",
+                            "cafe_article_count_non_trade" : "거래글_제외_개수",
+                            "blog_article_count"           : "블로그_개수"
+                        },
+                        "articles_status_rename_dict" : {
+                            "search_keyword"                      : "검색어",
+                            "cafe_article_count_status"           : "카페글_개수_yn",
+                            "cafe_article_count_non_trade_status" : "거래글_제외_개수_yn",
+                            "blog_article_count_status"           : "블로그_개수_yn"
                         }
                     }   
                 }
@@ -79,7 +100,10 @@
                     "검색어"              : "STAT_TERM",
                     "자동완성_키워드_yn"   : "STAT_AUTO_YN",
                     "인기주제_키워드_yn"   : "STAT_POPU_YN",
-                    "연관검색어_키워드_yn" : "STAT_RELA_YN"
+                    "연관검색어_키워드_yn" : "STAT_RELA_YN",
+                    "카페글_개수_yn"       : "CAFE_ARTICLES_YN",
+                    "거래글_제외_개수_yn"  : "NT_CAFE_ARTICLES_YN",
+                    "블로그_개수_yn"      : "BLOG_ARTICLES_YN"
                 },
                 "CHSCRAPE_001" : {
                     "일자"           : "AUTO_DATE",
@@ -99,6 +123,13 @@
                     "연관검색어_키워드" : "RELA_SRCK",
                     "검색어_순위"       : "RELA_RANK",
                     "더보기_yn"        : "RELA_MORE_YN"
+                },
+                "CHSCRAPE_004" : {
+                    "일자"             : "CAFE_BLOG_DATE",
+                    "검색어"           : "CAFE_BLOG_TERM",
+                    "카페글_개수"      : "CAFE_ARTICLE_CNT",
+                    "거래글_제외_개수" : "NT_CAFE_ARTICLE_CNT" ,
+                    "블로그_개수"      : "BLOG_ARTICLE_CNT"
                 }
             }
         },
@@ -106,14 +137,17 @@
             "target_dataset"       : "test",
             "project_id_string"    : "sincere-night-367502",
             "gcp_json_file"        : "C:/Users/User/Downloads/sincere-night-367502-d1ed9f50d1d7.json",
-            "gcp_table_names_list" : ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003"],
+            "table_names_list" : ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003", "CHSCRAPE_004"],
             "rename_dict" : {
                 "CHSCRAPE_STATUS" : {
                     "일자"                : "STAT_DATE",
                     "검색어"              : "STAT_TERM",
                     "자동완성_키워드_yn"   : "STAT_AUTO_YN",
                     "인기주제_키워드_yn"   : "STAT_POPU_YN",
-                    "연관검색어_키워드_yn" : "STAT_RELA_YN"
+                    "연관검색어_키워드_yn" : "STAT_RELA_YN",
+                    "카페글_개수_yn"       : "CAFE_ARTICLES_YN",
+                    "거래글_제외_개수_yn"  : "NT_CAFE_ARTICLES_YN",
+                    "블로그_개수_yn"      : "BLOG_ARTICLES_YN"
                 },
                 "CHSCRAPE_001" : {
                     "일자"           : "AUTO_DATE",
@@ -133,6 +167,13 @@
                     "연관검색어_키워드" : "RELA_SRCK",
                     "검색어_순위"       : "RELA_RANK",
                     "더보기_yn"        : "RELA_MORE_YN"
+                },
+                "CHSCRAPE_004" : {
+                    "일자"             : "CAFE_BLOG_DATE",
+                    "검색어"           : "CAFE_BLOG_TERM",
+                    "카페글_개수"      : "CAFE_ARTICLE_CNT",
+                    "거래글_제외_개수" : "NT_CAFE_ARTICLE_CNT" ,
+                    "블로그_개수"      : "BLOG_ARTICLE_CNT"
                 }
             },
             "form_outputs_config_dict" : {
@@ -144,7 +185,7 @@
                     "form_output_settings_method" : {
                         "status_merge_col"               : "검색어",
                         "output_file_name"               : "./data/{} 네이버 검색어 키워드 데이터.xlsx",
-                        "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어"],
+                        "output_sheets_names"            : ["수집 상태", "자동완성키워드", "인기주제", "연관검색어", "카페 블로그 게시물 개수"],
                         "naver_keywords_settings_dict" : {
                             "naver_search_url" : "https://www.naver.com/",
                             "keywords_list"    : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
@@ -158,8 +199,16 @@
                             "naver_views_url" : "https://search.naver.com/search.naver?where=view&sm=tab_jum&query={}",
                             "keywords_list"   : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니앤코", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
                         },
+                        "naver_articles_settings_dict" : {                            
+                            "naver_cafe_urls" : [
+                                "https://section.cafe.naver.com/ca-fe/home/search/articles?q={}",
+                                "https://section.cafe.naver.com/ca-fe/home/search/articles?q={}&em=1"
+                            ],
+                            "naver_blog_url" : "https://section.blog.naver.com/Search/Post.naver?pageNo=1&rangeType=ALL&orderBy=sim&keyword={}",
+                            "keywords_list"  : ["샤넬", "디올", "루이비통", "구찌", "에르메스", "티파니앤코", "까르띠에", "반클리프", "불가리", "설화수", "조말론", "입생로랑", "에스티로더"]
+                        },
                         "status_rename_dict" : {
-                            "date" : "일자"
+                            "date" : "일자"             
                         },
                         "keywords_rename_dict" : {
                             "date"              : "일자",
@@ -191,6 +240,19 @@
                         "views_status_rename_dict" : {
                             "search_keyword"    : "검색어",
                             "completion_status" : "연관검색어_키워드_yn"
+                        },
+                        "articles_rename_dict" : {
+                            "search_keyword"                      : "검색어",
+                            "cafe_article_count_status"           : "카페글_개수_yn",
+                            "cafe_article_count_non_trade_status" : "거래글_제외_개수_yn",
+                            "blog_article_count_status"           : "블로그_개수_yn"
+                        },
+                        "articles_status_rename_dict" : {
+                            "date"                         : "일자",
+                            "search_keyword"               : "검색어",
+                            "cafe_article_count"           : "카페글_개수",
+                            "cafe_article_count_non_trade" : "거래글_제외_개수",
+                            "blog_article_count"           : "블로그_개수"
                         }
                     }   
                 }
