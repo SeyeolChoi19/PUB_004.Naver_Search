@@ -14,15 +14,10 @@ class BigQueryInterface:
             credentials = service_account.Credentials.from_service_account_file(self.gcp_json_file)
         )
 
-    def get_data_from_gcp(self, table_name: str, columns_list: list[str], dataset_id: str) -> list[pd.DataFrame]:
-        def form_column_string(columns_list: list[str]) -> str:
-            output_str = ",".join(columns_list)
-
-            return output_str
-        
+    def get_data_from_gcp(self, table_name: str, columns_list: list[str], dataset_id: str) -> list[pd.DataFrame]:        
         query_string   = f"""
             SELECT 
-                {form_column_string(columns_list)}
+                {','.join(columns_list)}
             FROM
                 '{self.project_id}.{dataset_id}.{table_name}'
         """
@@ -33,4 +28,11 @@ class BigQueryInterface:
         return result_data
     
     def upload_data(self, upload_data: pd.DataFrame, project_id: str, table_id: str):
-        pandas_gbq.to_gbq(upload_data, table_id, project_id = project_id)
+        pandas_gbq.to_gbq(upload_data, table_id, project_id = project_id, if_exists = "append")
+
+if (__name__ == "__main__"):
+    for (sheet_name, table_name) in zip(["수집 상태", "자동완성키워드", "인기주제", "연관검색어"], ["CHSCRAPE_STATUS", "CHSCRAPE_001", "CHSCRAPE_002", "CHSCRAPE_003"]):
+        df  = pd.read_excel(r"C:\Users\User\NaverKeywords\data\2024-01-23 네이버 검색어 키워드 데이터 - 복사본.xlsx", sheet_name = sheet_name)
+        bqi = BigQueryInterface()
+        bqi.gcp_settings_method("sincere-night-367502", "C:/Users/User/Downloads/sincere-night-367502-d1ed9f50d1d7.json")
+        bqi.upload_data(df, "sincere-night-367502", f"test.{table_name}")
