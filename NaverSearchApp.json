@@ -1,0 +1,64 @@
+{
+    "NaverSearchVolume" : {
+        "naver_search_volume_settings_method" : {
+            "search_start_date"          : "2020-07-01",
+            "search_end_date"            : "2021-06-30",
+            "naver_open_api_url"         : "https://openapi.naver.com/v1/datalab/search",
+            "naver_search_ad_api_url"    : "https://searchad.naver.com/auth/login",
+            "naver_account"              : "",
+            "naver_password"             : "",
+            "client_id"                  : "",
+            "client_secret"              : "",
+            "output_filename"            : "naver_api_test_run.xlsx",
+            "keywords_list"              : ["테슬라"],
+            "dates_list"                 : ["2020-07-01", "2020-08-01", "2020-09-01", "2020-10-01", "2020-11-01", "2020-12-01", "2021-01-01", "2021-02-01", "2021-03-01", "2021-04-01", "2021-05-01", "2021-06-01"],
+            "naver_api_initial_headers"  : {
+                "authority"       : "searchad.naver.com",
+                "method"          : "POST",
+                "path"            : "/auth/login",
+                "scheme"          : "https",
+                "accept"          : "application/json, text/plain, */*",
+                "accept-encoding" : "gzip, deflate, br",
+                "accept-language" : "ko, en",
+                "content-length"  : "45",
+                "content-type"    : "application/json",
+                "cookie"          : "",
+                "origin"          : "https://searchad.naver.com",
+                "referer"         : "https://searchad.naver.com/",
+                "user-agent"      : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.225 Safari/537.36"
+            },
+            "naver_extraction_headers" : {
+                "authority"         : "manage.searchad.naver.com",
+                "method"            : "GET",
+                "path"              : "",
+                "scheme"            : "https",
+                "accept"            : "application/json, text/plain, */*",
+                "accept-encoding"   : "gzip, defalte, br",
+                "accept-language"   : "ko, en",
+                "authorization"     : "",
+                "cookie"            : "",
+                "referer"           : "",
+                "user-agent"        : "",
+                "x-accept-language" : "ko-KR"
+            },
+            "extraction_parameters_dict" : {
+                "format"              : "json",
+                "siteId"              : "",
+                "mobileSiteId"        : "",
+                "hintKeywords"        : "",
+                "includeHintKeywords" : "0",
+                "showDetail"          : "1",
+                "biztpId"             : "",
+                "month"               : "",
+                "event"               : "",
+                "keyword"             : ""
+            },
+            "additional_data_requests" : {
+                "startDate"     : "",
+                "endDate"       : "",
+                "timeUnit"      : "date",
+                "keywordGroups" : []
+            }
+        }
+    }
+}
