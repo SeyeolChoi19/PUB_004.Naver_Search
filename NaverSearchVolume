@@ -60,30 +60,9 @@ class GetMonthlySearch:
     def parse_monthly_data(self):
         index_num, temp_list, temp_length = 0, [], len(self.parse_list[0]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyLabel"])
 
-# i = 0
-# tmp_list = []
-# tmp_length = len(needtoparsed[0]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyLabel'])
-
-# for kk in KeywordList:
-#     for j in range(0,tmp_length):
-#         try:
-#             monthlyProgressPcQcCnt_     = needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyProgressPcQcCnt'][j]
-#             monthlyProgressMobileQcCnt_ = needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyProgressMobileQcCnt'][j]
-#             monthlyLabel_               = needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyLabel'][j] + "-01"
-
-#             monthlyProgressCnt_ = monthlyProgressPcQcCnt_ + monthlyProgressMobileQcCnt_
-#             tmp_list.append({"keyword" : kk, "date":monthlyLabel_, "a_value": monthlyProgressCnt_})
-#         except:
-#             pass
-#     i = i+1
-
-# df_1y = pd.DataFrame(tmp_list)
-# df_merged_1st = pd.merge(empty_raw_df, df_1y, how='left')
-
         for keyword in self.keywords_list:
             for json_index in range(0, temp_length):
                 try:
-                                                    #  needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyProgressPcQcCnt'][j]
                     monthly_progress_pc_count     = self.parse_list[index_num]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyProgressPcQcCnt"][json_index]
                     monthly_progress_mobile_count = self.parse_list[index_num]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyProgressMobileQcCnt"][json_index]
                     monthly_label                 = f'{self.parse_list[index_num]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyLabel"][json_index]}-01'
@@ -95,7 +74,7 @@ class GetMonthlySearch:
                     })
                 except:
                     pass
-                index_num += 1
+            index_num += 1
 
         self.naver_ad_monthly_search_values = pd.merge(self.base_dataframe, pd.DataFrame(temp_list), how = "left")
 
