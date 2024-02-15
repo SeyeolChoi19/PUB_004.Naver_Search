@@ -1,126 +1,147 @@
 import requests, time, json, urllib.request
 
-import pandas as pd 
+import pandas as pd
 
-from requests.auth import HTTPDigestAuth 
+class GetMonthlySearch:
+    def monthly_search_settings_method(self, keywords_tool_url: str, search_ad_login_url: str, naver_account: str, naver_password: str, open_api_id: str, open_api_secret: str, open_api_url: str, start_date: str, end_date: str, keywords_list: list[str], dates_list: list[str], login_headers: dict, authorization_headers: dict, parameters_dict: dict):
+        def return_base_dataframe(dates_list: list[str], keywords_list: list[str]):
+            empty_dataframe = {
+                "date"    : [],
+                "keyword" : []
+            }
 
-class NaverSearchVolume:
-    def naver_search_volume_settings_method(self, search_start_date: str, search_end_date: str, naver_open_api_url: str, naver_search_ad_api_url: str, naver_account: str, naver_password: str, client_id: str, client_secret: str, output_filename: str, keywords_list: list[str], dates_list: list[str], naver_api_initial_headers: dict, naver_extraction_headers: dict, extraction_parameters_dict: dict, additional_data_requests: dict):
-        def raw_dataframe(keyword_list: list[str], dates_list: list[str]):
-            empty_list = []
-            
-            for keyword in keyword_list:
+            for keyword in keywords_list:
                 for date in dates_list:
-                    empty_list.append({"keyword" : keyword, "date" : date})
+                    empty_dataframe["date"].append(date)
+                    empty_dataframe["keyword"].append(keyword)
 
-            return pd.DataFrame(empty_list)
-        
-        self.search_start_date          = search_start_date 
-        self.search_end_date            = search_end_date 
-        self.naver_open_api_url         = naver_open_api_url
-        self.naver_search_ad_api_url    = naver_search_ad_api_url
-        self.naver_client_id            = client_id 
-        self.naver_client_secret        = client_secret
-        self.output_filename            = output_filename 
-        self.keywords_list              = keywords_list 
-        self.dates_list                 = dates_list 
-        self.naver_api_initial_headers  = naver_api_initial_headers 
-        self.naver_extraction_headers   = naver_extraction_headers
-        self.login_info_dictionary      = {"loginId" : naver_account, "loginPwd" : naver_password}
-        self.extraction_parameters_dict = extraction_parameters_dict
-        self.additional_data_requests   = additional_data_requests
-        self.empty_raw_data_dataframe   = raw_dataframe(keywords_list, dates_list)
+            return pd.DataFrame(empty_dataframe)
 
-    def get_absolute_views(self):
+        self.keywords_tool_url     = keywords_tool_url
+        self.search_ad_login_url   = search_ad_login_url
+        self.keywords_list         = keywords_list
+        self.dates_list            = dates_list
+        self.login_headers         = login_headers
+        self.authorization_headers = authorization_headers
+        self.parameters_dict       = parameters_dict
+        self.naver_login_dict      = {"loginId" : naver_account, "loginPwd" : naver_password}
+        self.base_dataframe        = return_base_dataframe(dates_list, keywords_list)
+        self.__open_api_url        = open_api_url
+        self.__open_api_id         = open_api_id
+        self.__open_api_secret     = open_api_secret
+        self.open_api_body_dict    = {
+            "startDate" : start_date,
+            "endDate"   : end_date,
+            "timeUnit"  : "date"
+        }
+
+        self.naver_ad_daily_search_values = {
+            "keyword"      : [],
+            "date"         : [],
+            "ratio_values" : []
+        }
+
+    def get_monthly_data(self):
+        def modify_headers(keyword: str, login_request: requests):
+            self.authorization_headers["authorization"] = f"Bearer {login_request.json()['token']}"
+
+            self.parameters_dict["hintKeywords"] = keyword
+            self.parameters_dict["keyword"]      = keyword
+
         self.parse_list = []
 
-        for word in self.keywords_list:
-            login_object   = requests.post("https://searchad.naver.com/auth/login", headers = self.naver_api_initial_headers, data = json.dumps(self.login_info_dictionary))
-            session_object = requests.session()
+        for keyword in self.keywords_list:
+            login_request   = requests.post(self.search_ad_login_url, headers = self.login_headers, data = json.dumps(self.naver_login_dict))
+            session_object  = requests.session()
+            modify_headers(keyword, login_request)
+            response_object = session_object.get(self.keywords_tool_url, headers = self.authorization_headers, params = self.parameters_dict)
+            self.parse_list.append({"keyword" : keyword, "ntp" : response_object.json()})
 
-            self.naver_extraction_headers["authorization"]  = f"Bearer " + login_object.json()["token"]
-            self.extraction_parameters_dict["hintKeywords"] = word 
-            self.extraction_parameters_dict["keyword"]      = word 
+    def parse_monthly_data(self):
+        index_num, temp_list, temp_length = 0, [], len(self.parse_list[0]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyLabel"])
 
-            api_response = session_object.get(self.naver_api_url, headers = self.naver_extraction_headers, params = self.extraction_parameters_dict)
-            self.parse_list.append({"keyword" : word, "ntp" : api_response.json()})
+# i = 0
+# tmp_list = []
+# tmp_length = len(needtoparsed[0]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyLabel'])
+
+# for kk in KeywordList:
+#     for j in range(0,tmp_length):
+#         try:
+#             monthlyProgressPcQcCnt_     = needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyProgressPcQcCnt'][j]
+#             monthlyProgressMobileQcCnt_ = needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyProgressMobileQcCnt'][j]
+#             monthlyLabel_               = needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyLabel'][j] + "-01"
+
+#             monthlyProgressCnt_ = monthlyProgressPcQcCnt_ + monthlyProgressMobileQcCnt_
+#             tmp_list.append({"keyword" : kk, "date":monthlyLabel_, "a_value": monthlyProgressCnt_})
+#         except:
+#             pass
+#     i = i+1
+
+# df_1y = pd.DataFrame(tmp_list)
+# df_merged_1st = pd.merge(empty_raw_df, df_1y, how='left')
+
+        for keyword in self.keywords_list:
+            for json_index in range(0, temp_length):
+                try:
+                                                    #  needtoparsed[i]['ntp']['keywordList'][0]['monthlyProgressList']['monthlyProgressPcQcCnt'][j]
+                    monthly_progress_pc_count     = self.parse_list[index_num]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyProgressPcQcCnt"][json_index]
+                    monthly_progress_mobile_count = self.parse_list[index_num]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyProgressMobileQcCnt"][json_index]
+                    monthly_label                 = f'{self.parse_list[index_num]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyLabel"][json_index]}-01'
+                    monthly_total_progress_count  = monthly_progress_pc_count + monthly_progress_mobile_count
+                    temp_list.append({
+                        "keyword"        : keyword,
+                        "date"           : monthly_label,
+                        "absolute_value" : monthly_total_progress_count
+                    })
+                except:
+                    pass
+                index_num += 1
+
+        self.naver_ad_monthly_search_values = pd.merge(self.base_dataframe, pd.DataFrame(temp_list), how = "left")
+
+    def get_daily_search_results(self):
+        def get_response_object(keyword: str):
+            self.open_api_body_dict["keywordGroups"] = [{
+                "groupName" : str(keyword),
+                "keywords"  : [str(keyword)]
+            }]
+
+            request_object = urllib.request.Request(self.__open_api_url)
+            request_object.add_header("X-Naver-Client-Id", self.__open_api_id)
+            request_object.add_header("X-Naver-Client-Secret", self.__open_api_secret)
+            request_object.add_header("Content-Type", "application/json")
+
+            return request_object
+
+        def save_api_data(keyword: str, results_object: dict):
+            for index in range(0, len(results_object["results"][0]["data"])):
+                period_value = results_object["results"][0]["data"][index]["period"]
+                ratio_value  = results_object["results"][0]["data"][index]["ratio"]
+                results_list = [keyword, period_value, ratio_value]
+
+                for (key, value) in zip(self.naver_ad_daily_search_values.keys(), results_list):
+                    self.naver_ad_daily_search_values[key].append(value)
+
+        for keyword in self.keywords_list:
+            response_object = urllib.request.urlopen(get_response_object(keyword), data = json.dumps(self.open_api_body_dict).encode("utf-8"))
+            results_object  = json.loads(response_object.read().decode("utf-8"))
+            save_api_data(keyword, results_object)
             time.sleep(0.5)
 
-    def parse_absolute_views(self):
-        def inner_try_except_block(counter_variable: int, index_number: int, keyword: str):
-            try:
-                parse_object    = self.parse_list[counter_variable]["ntp"]["keywordList"][0]["monthlyProgressList"]
-                pc_quantity     = parse_object["monthlyProgressPcQcCnt"][index_number]
-                mobile_quantity = parse_object["monthlyProgressMobileQcCnt"][index_number]
-                monthly_label   = f'{parse_object["monthlyLabel"][index_number]}-01'
-                total_progress  = pc_quantity + mobile_quantity
-                temporary_list.append({"keyword" : keyword, "date" : monthly_label, "actual_value" : total_progress})
-            except:
-                pass
-
-        counter_variable = -1
-        temporary_list   = []
-        temp_length_var  = len(self.parse_list[0]["ntp"]["keywordList"][0]["monthlyProgressList"]["monthlyLabel"])
+    def form_output_data_table(self):
+        month_dataframe = self.naver_ad_monthly_search_values.copy()
+        daily_dataframe = pd.DataFrame(self.naver_ad_daily_search_values)
+        dataframe_list  = []
 
         for keyword in self.keywords_list:
-            counter_variable += 1
-            
-            for index_number in range(temp_length_var):
-                inner_try_except_block(counter_variable, index_number, keyword)
+            sub_month_dataframe = month_dataframe[month_dataframe["keyword"] == keyword]
+            sub_daily_dataframe = daily_dataframe[daily_dataframe["keyword"] == keyword]
+            actual_value_sum    = sub_month_dataframe["absolute_value"].sum()
+            ratio_value_sum     = sub_daily_dataframe["ratio_values"].sum()
 
-        self.one_year_dataframe   = pd.DataFrame(temporary_list)
-        self.merged_one_year_data = pd.merge(self.empty_raw_data_dataframe, self.one_year_dataframe, how = "left")
+            sub_daily_dataframe["absolute_sum"] = actual_value_sum
+            sub_daily_dataframe["ratio_sum"]    = ratio_value_sum
+            sub_daily_dataframe["final_value"]  = (sub_daily_dataframe["ratio_values"] * sub_daily_dataframe["absolute_sum"]) / sub_daily_dataframe["ratio_sum"]
+            dataframe_list.append(sub_daily_dataframe)
 
-    def get_addtional_data(self):
-        def modify_request_body(request_dict: dict):
-            request_dict["startDate"]     = self.search_start_date
-            request_dict["endDate"]       = self.search_end_date
-            request_dict["keywordGroups"] = [{"groupName" : str(keyword), "keywords" : [str(keyword)]}]
-
-            return request_dict
-        
-        def parse_data(keyword: str, response_json: dict):
-            temp_length = len(response_json["results"][0]["data"])
-
-            for index_number in range(temp_length):
-                period = response_json["results"][0]["data"][index_number]["period"]
-                ratio  = response_json["results"][0]["data"][index_number]["ratio"]
-                temporary_list.append({"keyword" : keyword, "date" : period, "relative_value" : ratio})
-
-        temporary_list = []
-
-        for keyword in self.keywords_list:
-            request_string  = json.dumps(modify_request_body(self.additional_data_requests)).encode("utf-8")
-            request_object  = urllib.request.Request(self.naver_open_api_url).add_header("X-Naver-Client-Id", self.naver_client_id).add_header("X-Naver-Client-Secret", self.naver_client_secret).add_header("Content-Type", "application/json")
-            response_object = urllib.request.urlopen(request_object, data = request_string)
-            response_json   = json.loads(response_object.read().decode("utf-8"))
-            parse_data(response_json)
-
-        self.three_year_dataframe = pd.DataFrame(temporary_list)
-    
-    def form_final_outputs(self):
-        output_dataframe_list = []
-
-        for keyword in self.keywords_list:
-            sub_dataframe_1 = self.merged_one_year_data[self.merged_one_year_data["keyword"] == keyword]
-            actual_sum      = sub_dataframe_1["actual_value"].sum()
-            sub_dataframe_2 = self.three_year_dataframe[self.three_year_dataframe["relative_value"] == keyword]
-            
-            sub_dataframe_2["actual_sum"]   = actual_sum
-            sub_dataframe_2["relative_sum"] = sub_dataframe_2["relative_value"].sum()
-            sub_dataframe_2["final_value"]  = (sub_dataframe_2["relative_value"] * sub_dataframe_2["actual_sum"]) / sub_dataframe_2["relative_sum"] 
-            output_dataframe_list.append(sub_dataframe_2)
-
-        pd.concat(output_dataframe_list).to_excel(self.output_filename, index = False)
-
-if (__name__ == "__main__"):
-    with open("./config/NaverSearchVolumeConfig.json", "r", encoding = "utf-8") as f:
-        config_dict = json.load(f)
-
-    naver_search_object = NaverSearchVolume()
-    naver_search_object.naver_search_volume_settings_method(**config_dict["NaverSearchVolume"]["naver_search_volume_settings_method"])
-    naver_search_object.get_absolute_views()
-    naver_search_object.parse_absolute_views()
-    naver_search_object.get_additional_data()
-    naver_search_object.form_final_outputs()
-    
+        return pd.concat(dataframe_list)
